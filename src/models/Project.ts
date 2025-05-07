@@ -3,8 +3,8 @@ export interface IProject {
     name: string;
     description: string;
     status: string;
-    createdAt: Date;
-    updatedAt: Date;
+    startDate: Date;
+    // updatedAt: Date; No longer needed
 }
 
-
+export const statusOptions = ["Not Started", "In Progress", "On Hold", "Completed"];
