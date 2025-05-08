@@ -11,10 +11,10 @@ function ProjectForm({onAdd}:ProjectFormProps){
     const[formData,setFormData] = useState({
         name:"",
         description:"",
-        status: statusOptions[0], // Default status
+        status: statusOptions[0], // SETTING up form default
         startDate: new Date(),
     })
-
+    // change handlers for form fields and submit button click
     function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>){ 
         const{name,value} = e.target;
         setFormData((prev)=>({...prev,[name]:value}))
@@ -22,19 +22,19 @@ function ProjectForm({onAdd}:ProjectFormProps){
 
     function handleSubmit(e: React.FormEvent<HTMLFormElement>){
         e.preventDefault();
-        // Basic validation check
+        // Validation 
         if (!formData.name || !formData.description || !formData.startDate) {
             alert("Please fill in all required fields: Name, Description, and Start Date.");
             return;
         }
 
-        // Validate startDate
+        // Validate startDate as a valid date dates after 9999 cause it to crash
         const projectStartDate = new Date(formData.startDate); 
         if (isNaN(projectStartDate.getTime())) { 
             alert("Start Date is not a valid date. Please use YYYY-MM-DD format.");
             return;
         }
-
+        // enforce
         const year = projectStartDate.getFullYear();
         if (year < 1000 || year > 9999) {
             alert("Start Date year must be between 1000 and 9999.");
@@ -46,11 +46,11 @@ function ProjectForm({onAdd}:ProjectFormProps){
             name:formData.name,
             description:formData.description,
             status:formData.status,
-            startDate: projectStartDate, // Use the validated date object
+            startDate: projectStartDate, // just added a uuid  TODO maybe integrate it with the uuid of the project
         }
 
         onAdd(newProject);
-        // Optionally reset form
+        // form reset
         setFormData({
             name: "",
             description: "",
@@ -59,28 +59,24 @@ function ProjectForm({onAdd}:ProjectFormProps){
         });
     }
 
-    // Helper to format date for input type='date'
+    // Date formatter function
     const formatDateForInput = (dateValue: string | Date): string => {
         const dateObj = dateValue instanceof Date ? dateValue : new Date(dateValue);
     
         if (isNaN(dateObj.getTime())) {
-            // If the current input string can't be parsed into a valid date, return empty.
-            // This helps if user types something completely non-sensical.
             return '';
         }
     
         const year = dateObj.getFullYear();
-        // HTML date input typically expects years between 0001 and 9999 for standard YYYY-MM-DD format.
-        // If year is outside this, toISOString() might produce an extended format (e.g., +002023-10-26)
-        // which <input type="date"> cannot render, causing a crash.
+        // If year is outside this, toISOString() might produce an extended format
+        // which <input type="date"> cannot render, causing a crash so fixing it between 1 and 9999
         if (year < 1 || year > 9999) { 
             return ''; // Return empty string to prevent crash, user's raw input remains in formData.startDate
         }
         
-        // If it's a valid date with a year in the standard range, format it.
         return dateObj.toISOString().split('T')[0];
     };
-
+//return the form with all the fields and the submit button + basic styling
     return(
         <form onSubmit={handleSubmit} className="space-y-4 p-6 bg-white shadow-md rounded-lg max-w-lg mx-auto my-8">
             <div>

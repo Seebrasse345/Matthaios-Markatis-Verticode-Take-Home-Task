@@ -4,7 +4,7 @@ export interface IProject {
     description: string;
     status: string;
     startDate: Date;
-    // updatedAt: Date; No longer needed
+    // iproject export setup
 }
 
 export const statusOptions = ["Not Started", "In Progress", "On Hold", "Completed"];
